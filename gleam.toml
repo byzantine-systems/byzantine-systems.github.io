@@ -1,0 +1,17 @@
+name = "blog"
+version = "0.1.0"
+target = "erlang"
+
+description = "byzantine-systems.github.io — a Blogatto-powered static site"
+licences = ["MIT"]
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+blogatto = ">= 6.0.0 and < 7.0.0"
+shellout = ">= 1.8.0 and < 2.0.0"
+simplifile = ">= 2.4.0 and < 3.0.0"
+lustre = ">= 5.7.0 and < 6.0.0"
+gleam_time = ">= 1.8.0 and < 2.0.0"
+
+[dev-dependencies]
+gleeunit = ">= 1.0.0 and < 2.0.0"
