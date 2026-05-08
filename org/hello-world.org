@@ -1,0 +1,23 @@
+#+TITLE: Hello, Byzantium
+#+DATE: 2026-05-07 12:00:00
+#+DESCRIPTION: First post on the new Blogatto-powered blog
+
+* Welcome
+
+Welcome to the *byzantine-systems* blog.
+
+This post is authored in Emacs Org-mode, then converted to Markdown by
+Pandoc, and finally rendered to HTML by [[https://blogat.to][Blogatto]],
+a Gleam static site generator.
+
+** Why this stack
+
+- Org-mode for writing comfort
+- Pandoc as a robust, mature converter
+- Gleam + Blogatto for a typed, fast build pipeline
+
+#+BEGIN_SRC gleam
+pub fn main() {
+  io.println("Hello, Byzantium!")
+}
+#+END_SRC
