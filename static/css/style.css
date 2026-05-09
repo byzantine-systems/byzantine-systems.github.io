@@ -1,0 +1,90 @@
+:root {
+  --bg: #ffffff;
+  --fg: #222222;
+  --link: #0055aa;
+  --code-bg: #f4f4f4;
+  --max-width: 45rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --fg: #eeeeee;
+    --link: #55aaff;
+    --code-bg: #2d2d2d;
+  }
+}
+
+body {
+  /* Classic blog feel; change to system-ui for modern look */
+  font-family: serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+  max-width: var(--max-width);
+  margin: 2rem auto;
+  padding: 0 1rem;
+  word-wrap: break-word;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  margin-top: 2rem;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+pre, code {
+  font-family: monospace;
+  background: var(--code-bg);
+  border-radius: 3px;
+}
+
+pre {
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid #ccc3;
+}
+
+code {
+  padding: 0.2rem 0.4rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 2rem 0;
+}
+
+/* Simple Navigation */
+nav ul {
+  /* Aligns items in a row */
+  display: flex;       
+  flex-wrap: wrap; 
+  justify-content: center;
+  list-style-type: none;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 1rem 0 2rem 0;
+}
+
+nav a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}

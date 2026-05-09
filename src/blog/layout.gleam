@@ -1,4 +1,5 @@
 import blogatto/post.{type Post}
+import gleam/int
 import gleam/list
 import gleam/time/calendar
 import gleam/time/timestamp
@@ -8,7 +9,18 @@ import lustre/element/html
 
 pub const site_url = "https://byzantine-systems.github.io"
 
-pub const site_description = "Notes on Gleam, Erlang, distributed systems, and other byzantine matters."
+pub const site_description = "'There's no need to build a labyrinth when the entire universe is one.'"
+
+fn to_link(text: String, link: String) {
+  html.a(
+    [
+      attribute.href(link),
+    ],
+    [
+      html.text(text),
+    ],
+  )
+}
 
 pub fn home_page(_posts: List(Post(msg))) -> Element(msg) {
   layout("Byzantine Systems", [
@@ -52,6 +64,44 @@ pub fn post_page(p: Post(msg), _all_posts: List(Post(msg))) -> Element(msg) {
   ])
 }
 
+pub fn navbar() {
+  html.nav([attribute.class("site-nav")], [
+    html.ul([], [
+      html.li([], [to_link("≡ Home", "/")]),
+      html.li([], [to_link("□ Posts", "/posts/")]),
+      html.li([], [to_link("◇ Projects", "/projects/")]),
+      html.li([], [to_link("RSS", "/rss.xml")]),
+    ]),
+  ])
+}
+
+pub fn footer() -> Element(msg) {
+  let emacs = to_link("GNU/Emacs", "https://www.gnu.org/software/emacs/")
+  let nix = to_link("Nix", "https://nixos.org/")
+  let gleam = to_link("Gleam", "https://gleam.run/")
+  let blogatto = to_link("Blogatto", "https://blogat.to/")
+  let source_link =
+    to_link(
+      "here",
+      "https://github.com/byzantine-systems/byzantine-systems.github.io",
+    )
+  html.footer([], [
+    html.p([], [
+      html.text("Built with "),
+      emacs,
+      html.text(", "),
+      nix,
+      html.text(" and "),
+      gleam,
+      html.text(". Generated with "),
+      blogatto,
+      html.text(", source code available "),
+      source_link,
+      html.text("."),
+    ]),
+  ])
+}
+
 fn layout(page_title: String, content: List(Element(msg))) -> Element(msg) {
   html.html([attribute.attribute("lang", "en")], [
     html.head([], [
@@ -71,23 +121,16 @@ fn layout(page_title: String, content: List(Element(msg))) -> Element(msg) {
         attribute.attribute("title", "Byzantine Systems RSS"),
         attribute.href("/rss.xml"),
       ]),
-      html.style(
-        [],
-        "nav.site-nav { display: flex; justify-content: center; gap: 1.5rem; padding: 1rem 0; }",
-      ),
+      // This links to the CSS file copied from your static folder
+      html.link([attribute.rel("stylesheet"), attribute.href("/css/style.css")]),
     ]),
     html.body([], [
-      html.nav([attribute.class("site-nav")], [
-        html.a([attribute.href("/")], [html.text("Home")]),
-        html.a([attribute.href("/posts/")], [html.text("Posts")]),
-        html.a([attribute.href("/projects/")], [html.text("Projects")]),
-        html.a([attribute.href("/rss.xml")], [html.text("RSS")]),
-      ]),
+      navbar(),
       html.header([], [
         html.h1([], [html.text("Byzantine Systems")]),
-        html.p([], [html.text(site_description)]),
       ]),
       html.main([], content),
+      footer(),
     ]),
   ])
 }
@@ -104,18 +147,15 @@ fn post_link(p: Post(msg)) -> Element(msg) {
 fn format_date(ts: timestamp.Timestamp) -> String {
   let #(date, _) = timestamp.to_calendar(ts, calendar.utc_offset)
   let calendar.Date(year:, month:, day:) = date
-  pad2(day) <> " " <> month_short(month) <> " " <> int_to_string(year)
+  pad2(day) <> " " <> month_short(month) <> " " <> int.to_string(year)
 }
 
 fn pad2(n: Int) -> String {
   case n < 10 {
-    True -> "0" <> int_to_string(n)
-    False -> int_to_string(n)
+    True -> "0" <> int.to_string(n)
+    False -> int.to_string(n)
   }
 }
-
-@external(erlang, "erlang", "integer_to_binary")
-fn int_to_string(n: Int) -> String
 
 fn month_short(m: calendar.Month) -> String {
   case m {
