@@ -86,12 +86,11 @@
             packages =
               with pkgs;
               [
-                # Extra tooling
                 gnumake
-                inotify-tools
                 pandoc
                 rebar3
               ]
+              ++ lib.optionals stdenv.isLinux [ inotify-tools ]
               ++ [ config.packages.default ];
 
             languages.erlang = {

@@ -3,12 +3,14 @@ import blogatto
 import blogatto/config
 import blogatto/config/feed/rss as rss_cfg
 import blogatto/config/post as post_cfg
+import blogatto/config/post/code
 
 pub fn config() -> config.Config(msg) {
   let posts =
     post_cfg.default()
     |> post_cfg.path("./blog")
     |> post_cfg.template(layout.post_page)
+    |> post_cfg.syntax_highlighting(code.default())
 
   let feed =
     rss_cfg.new("Byzantine Systems", layout.site_url, layout.site_description)

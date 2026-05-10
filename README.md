@@ -34,9 +34,7 @@ direnv allow .
 
 ## Building the Blog
 
-Posts are written in Emacs [Org-mode](https://orgmode.org/) under
-[org/](org/), converted to Markdown by [Pandoc](https://pandoc.org/),
-and rendered into a static page by [Blogatto](https://blogat.to).
+Posts are written in Emacs [Org-mode](https://orgmode.org/) under [org/](org/), converted to Markdown by [Pandoc](https://pandoc.org/), and rendered into a static page by [Blogatto](https://blogat.to).
 
 ```sh
 # Converts .org -> .md

@@ -4,11 +4,11 @@
 
 * Welcome
 
-Welcome to the *byzantine-systems* blog.
+Welcome to the *Byzantine Systems* blog.
 
-This post is authored in Emacs Org-mode, then converted to Markdown by
-Pandoc, and finally rendered to HTML by [[https://blogat.to][Blogatto]],
-a Gleam static site generator.
+This post is authored in Emacs Org-mode [cite:@schulte2012multi], then converted
+to Markdown by Pandoc, and finally rendered to HTML by [[https://blogat.to][Blogatto]], a Gleam static
+site generator.
 
 ** Why this stack
 
