@@ -10,6 +10,8 @@ pub fn main() {
     blog.config()
     |> dev.new
     |> dev.before_build(fn() { async_convert() })
+    // A workaround
+    // |> dev.live_reload(False)
     |> dev.build_command("gleam run")
     |> dev.start
 

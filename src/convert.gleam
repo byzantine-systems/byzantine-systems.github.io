@@ -6,9 +6,15 @@ import gleam/string
 import shellout
 import simplifile
 
+// Source directories
 const org_dir = "org"
 
-const blog_dir = "blog"
+const org_posts_dir = "org/posts"
+
+// Output directories
+const blog_pages_dir = "blog/pages"
+
+const blog_posts_dir = "blog/posts"
 
 pub fn main() {
   let assert Ok(_) = run()
@@ -17,8 +23,13 @@ pub fn main() {
 
 pub fn run() -> Result(Nil, String) {
   use _ <- result.try(
-    simplifile.create_directory_all(blog_dir)
-    |> result.map_error(simplifile_error("create " <> blog_dir, _)),
+    simplifile.create_directory_all(blog_pages_dir)
+    |> result.map_error(simplifile_error("create " <> blog_pages_dir, _)),
+  )
+
+  use _ <- result.try(
+    simplifile.create_directory_all(blog_posts_dir)
+    |> result.map_error(simplifile_error("create " <> blog_posts_dir, _)),
   )
 
   let assert Ok(bib_dir) =
@@ -32,20 +43,44 @@ pub fn run() -> Result(Nil, String) {
     |> list.filter(string.ends_with(_, ".bib"))
     |> list.map(fn(f) { "--bibliography=" <> bib_dir <> "/" <> f })
 
-  use files <- result.try(
+  // Convert pages: org/*.org → blog/pages/<slug>/index.md
+  use org_files <- result.try(
     simplifile.read_directory(org_dir)
     |> result.map_error(simplifile_error("read " <> org_dir, _)),
   )
 
-  files
+  use _ <- result.try(
+    org_files
+    |> list.filter(string.ends_with(_, ".org"))
+    |> list.try_each(fn(file) {
+      let slug = string.replace(file, ".org", "")
+      let input = org_dir <> "/" <> file
+      let output_dir = blog_pages_dir <> "/" <> slug
+      convert_file(input, output_dir, bib_args)
+    }),
+  )
+
+  // Convert posts: org/posts/*.org → blog/posts/<slug>/index.md
+  use post_files <- result.try(
+    simplifile.read_directory(org_posts_dir)
+    |> result.map_error(simplifile_error("read " <> org_posts_dir, _)),
+  )
+
+  post_files
   |> list.filter(string.ends_with(_, ".org"))
-  |> list.try_each(fn(file) { convert_one(file, bib_args) })
+  |> list.try_each(fn(file) {
+    let slug = string.replace(file, ".org", "")
+    let input = org_posts_dir <> "/" <> file
+    let output_dir = blog_posts_dir <> "/" <> slug
+    convert_file(input, output_dir, bib_args)
+  })
 }
 
-fn convert_one(file: String, bib_args: List(String)) -> Result(Nil, String) {
-  let slug = string.replace(file, ".org", "")
-  let input = org_dir <> "/" <> file
-  let output_dir = blog_dir <> "/" <> slug
+fn convert_file(
+  input: String,
+  output_dir: String,
+  bib_args: List(String),
+) -> Result(Nil, String) {
   let output = output_dir <> "/index.md"
 
   case is_up_to_date(input, output) {
