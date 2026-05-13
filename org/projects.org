@@ -1,0 +1,7 @@
+#+TITLE: Projects
+#+DATE: 2026-05-07 12:00:00
+#+DESCRIPTION: Project List
+
+Here's a non-exaustive list of the projecs we currently maintain:
+
++ [[https://github.com/byzantine-systems/eparch][Eparch]]: A Gleam wrapper for Erlang's ~gen_statem~ and ~gen_event~.

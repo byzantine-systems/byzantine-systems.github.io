@@ -6,14 +6,15 @@ description = "byzantine-systems.github.io — a Blogatto-powered static site"
 licences = ["GPL-3.0-or-later"]
 
 [dependencies]
-gleam_stdlib = ">= 0.44.0 and < 2.0.0"
-gleam_erlang = ">= 1.3.0 and < 2.0.0"
-blogatto = ">= 6.0.0 and < 7.0.0"
-shellout = ">= 1.8.0 and < 2.0.0"
-simplifile = ">= 2.4.0 and < 3.0.0"
-lustre = ">= 5.7.0 and < 6.0.0"
-gleam_time = ">= 1.8.0 and < 2.0.0"
-smalto = ">= 3.0.0 and < 4.0.0"
+gleam_stdlib   = ">= 0.44.0 and < 2.0.0"
+gleam_erlang   = ">= 1.3.0 and < 2.0.0"
+blogatto       = ">= 6.0.0 and < 7.0.0"
+shellout       = ">= 1.8.0 and < 2.0.0"
+simplifile     = ">= 2.4.0 and < 3.0.0"
+lustre         = ">= 5.7.0 and < 6.0.0"
+gleam_time     = ">= 1.8.0 and < 2.0.0"
+smalto         = ">= 3.0.0 and < 4.0.0"
+mork           = ">= 1.12.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"

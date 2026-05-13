@@ -22,16 +22,8 @@ fn to_link(text: String, link: String) {
   )
 }
 
-pub fn home_page(_posts: List(Post(msg))) -> Element(msg) {
-  layout("Byzantine Systems", [
-    html.p([], [
-      html.text("Welcome. Browse the "),
-      html.a([attribute.href("/posts/")], [html.text("posts")]),
-      html.text(" or "),
-      html.a([attribute.href("/projects/")], [html.text("projects")]),
-      html.text("."),
-    ]),
-  ])
+pub fn home_page(content: Element(msg)) -> Element(msg) {
+  layout("Byzantine Systems", [content])
 }
 
 pub fn posts_page(posts: List(Post(msg))) -> Element(msg) {
@@ -46,11 +38,8 @@ pub fn posts_page(posts: List(Post(msg))) -> Element(msg) {
   ])
 }
 
-pub fn projects_page(_posts: List(Post(msg))) -> Element(msg) {
-  layout("Projects", [
-    html.h2([], [html.text("Projects")]),
-    html.p([], [html.text("Projects coming soon.")]),
-  ])
+pub fn projects_page(content: Element(msg)) -> Element(msg) {
+  layout("Projects", [content])
 }
 
 pub fn post_page(p: Post(msg), _all_posts: List(Post(msg))) -> Element(msg) {
@@ -77,6 +66,7 @@ pub fn navbar() {
 
 pub fn footer() -> Element(msg) {
   let emacs = to_link("GNU/Emacs", "https://www.gnu.org/software/emacs/")
+  let orgmode = to_link("Orgmode", "https://orgmode.org/")
   let nix = to_link("Nix", "https://nixos.org/")
   let gleam = to_link("Gleam", "https://gleam.run/")
   let blogatto = to_link("Blogatto", "https://blogat.to/")
@@ -89,6 +79,8 @@ pub fn footer() -> Element(msg) {
     html.p([], [
       html.text("Built with "),
       emacs,
+      html.text(", "),
+      orgmode,
       html.text(", "),
       nix,
       html.text(" and "),
