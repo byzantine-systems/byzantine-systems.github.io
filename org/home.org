@@ -11,6 +11,6 @@ for systemic laziness, where "succedding" means finding another sucker to fall
 for a predatory scam, the elevation of mediocre ideas into industry defaults.
 
 We are here to converge academic rigor with uncompromising production standards,
-we'll replace "good enough" engineering with mathematically grounded resilience,
-we are here to prove that the most enduring systems are built when integrity and
-logic are treated as non-negotiable requirements rather than afterthoughts.
+we'll replace "good enough" engineering with sound resilience, we are here to
+prove that the most enduring systems are built when integrity and logic are
+treated as non-negotiable requirements rather than afterthoughts.
