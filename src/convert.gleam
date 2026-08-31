@@ -32,9 +32,16 @@ pub fn run() -> Result(Nil, String) {
     |> result.map_error(simplifile_error("create " <> blog_posts_dir, _)),
   )
 
-  let assert Ok(bib_dir) =
-    application.priv_directory("blog")
-    |> result.map(fn(priv) { priv <> "/bibtex" })
+  let assert Ok(priv_dir) = application.priv_directory("blog")
+
+  let bib_dir = priv_dir <> "/bibtex"
+
+  // Post-processing pandoc can't do on its own; see each filter for why. They
+  // run after `--citeproc` below, so the bibliography filter sees a document
+  // that already has its reference list.
+  let lua_filters =
+    ["verse.lua", "bibliography.lua", "images.lua"]
+    |> list.map(fn(f) { "--lua-filter=" <> priv_dir <> "/pandoc/" <> f })
 
   // Builds a list of each *.bib file in the bibtex directory
   let bib_args =
@@ -42,6 +49,8 @@ pub fn run() -> Result(Nil, String) {
     |> result.unwrap([])
     |> list.filter(string.ends_with(_, ".bib"))
     |> list.map(fn(f) { "--bibliography=" <> bib_dir <> "/" <> f })
+
+  let pandoc_args = list.append(bib_args, lua_filters)
 
   // Convert pages: org/*.org → blog/pages/<slug>/index.md
   use org_files <- result.try(
@@ -56,7 +65,7 @@ pub fn run() -> Result(Nil, String) {
       let slug = string.replace(file, ".org", "")
       let input = org_dir <> "/" <> file
       let output_dir = blog_pages_dir <> "/" <> slug
-      convert_file(input, output_dir, bib_args)
+      convert_file(input, output_dir, pandoc_args)
     }),
   )
 
@@ -72,14 +81,14 @@ pub fn run() -> Result(Nil, String) {
     let slug = string.replace(file, ".org", "")
     let input = org_posts_dir <> "/" <> file
     let output_dir = blog_posts_dir <> "/" <> slug
-    convert_file(input, output_dir, bib_args)
+    convert_file(input, output_dir, pandoc_args)
   })
 }
 
 fn convert_file(
   input: String,
   output_dir: String,
-  bib_args: List(String),
+  pandoc_args: List(String),
 ) -> Result(Nil, String) {
   let output = output_dir <> "/index.md"
 
@@ -96,7 +105,7 @@ fn convert_file(
       let args =
         list.flatten([
           ["-s", input, "-t", "gfm", "--citeproc"],
-          bib_args,
+          pandoc_args,
           ["-M", "link-citations=true"],
           ["-o", output],
         ])

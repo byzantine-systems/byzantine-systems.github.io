@@ -1,18 +1,48 @@
+/* Themes come in three states: no [data-theme] follows the system setting,
+   [data-theme="light"] and [data-theme="dark"] are explicit choices made with
+   the navbar switch. The dark palette is therefore spelled out twice — once
+   for the system default, once for the explicit choice — because a media
+   query and a plain selector cannot share one rule. Keep the two in sync. */
+
 :root {
+  color-scheme: light;
   --bg: #ffffff;
   --fg: #222222;
   --link: #0055aa;
   --code-bg: #f4f4f4;
+  --quote-bg: #f4f1ea;
+  --quote-border: #c9c0ad;
+  --verse-bg: #eef1f5;
+  --rule: #cccccc;
   --max-width: 45rem;
 }
 
+/* System setting, unless the reader has explicitly chosen light */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --bg: #1a1a1a;
     --fg: #eeeeee;
     --link: #55aaff;
     --code-bg: #2d2d2d;
+    --quote-bg: #262320;
+    --quote-border: #5a5245;
+    --verse-bg: #20242a;
+    --rule: #3d3d3d;
   }
+}
+
+/* Explicit choice, which wins over the system setting in both directions */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a1a1a;
+  --fg: #eeeeee;
+  --link: #55aaff;
+  --code-bg: #2d2d2d;
+  --quote-bg: #262320;
+  --quote-border: #5a5245;
+  --verse-bg: #20242a;
+  --rule: #3d3d3d;
 }
 
 body {
@@ -62,10 +92,87 @@ img {
   height: auto;
 }
 
+/* Org-mode #+begin_quote — justified, on its own background */
+blockquote {
+  margin: 1.75rem 0;
+  padding: 1rem 1.5rem;
+  background: var(--quote-bg);
+  border-left: 3px solid var(--quote-border);
+  border-radius: 3px;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+/* Org-mode #+begin_verse — always centred, on its own background */
+.verse {
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--verse-bg);
+  border-radius: 3px;
+  text-align: center;
+  text-wrap: balance;
+  font-style: italic;
+  line-height: 1.8;
+}
+
+blockquote > :first-child,
+.verse > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child,
+.verse > :last-child {
+  margin-bottom: 0;
+}
+
+/* A verse attributed inside a quote keeps the quote's background */
+blockquote .verse {
+  background: none;
+  padding: 0;
+}
+
+@media (max-width: 30rem) {
+  blockquote,
+  .verse {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 hr {
   border: 0;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--rule);
   margin: 2rem 0;
+}
+
+/* A full-width rule separating the body of the page from what closes it:
+   the footnote list and the site footer. */
+.footnotes,
+body > footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+}
+
+.footnotes ol {
+  padding-left: 1.5rem;
+}
+
+/* Citeproc's reference list, under the heading bibliography.lua adds */
+.csl-entry {
+  margin-bottom: 0.75rem;
+}
+
+.hanging-indent .csl-entry {
+  padding-left: 1.5rem;
+  text-indent: -1.5rem;
+}
+
+.footnote-backref {
+  margin-left: 0.4rem;
+  text-decoration: none;
 }
 
 /* Simple Navigation */
@@ -87,4 +194,34 @@ nav a {
 
 nav a:hover {
   text-decoration: underline;
+}
+
+/* The theme switch needs JavaScript to do anything, so it stays hidden until
+   the init script marks the document as script-enabled. */
+.theme-switch {
+  display: none;
+}
+
+.has-js .theme-switch {
+  display: flex;
+}
+
+/* Icon-only: the glyph alone names the state, so it is sized up a little and
+   given a tap-sized box. The tooltip and aria-label carry the wording. */
+#theme-switch {
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--link);
+  background: none;
+  border: 0;
+  border-radius: 3px;
+  padding: 0;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  cursor: pointer;
+}
+
+#theme-switch:hover {
+  opacity: 0.7;
 }

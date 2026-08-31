@@ -1,4 +1,5 @@
 import blog/layout
+import blog/nix_grammar
 import blogatto
 import blogatto/config
 import blogatto/config/feed/rss as rss_cfg
@@ -26,7 +27,10 @@ pub fn config() -> config.Config(msg) {
     post_cfg.default()
     |> post_cfg.path("./blog/posts")
     |> post_cfg.template(layout.post_page)
-    |> post_cfg.syntax_highlighting(code.default())
+    |> post_cfg.syntax_highlighting(
+      code.default()
+      |> code.add_language(nix_grammar.grammar, ["nix"]),
+    )
 
   let feed =
     rss_cfg.new("Byzantine Systems", layout.site_url, layout.site_description)
