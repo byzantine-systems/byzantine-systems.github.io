@@ -2,15 +2,31 @@
 #+DATE: 2026-05-07 12:00:00
 #+DESCRIPTION: Home page
 
-*Byzantine Systems* operates at the intersection of Programming Language Theory
-(PLT), Logic & Mathematics, resilient operations and immutable infrastructure,
-engineering software that honors the most robust traditions of Computer
-Science. We are one amognst many initiatives that exist solely to push back
-against the modern Silicon Valley ethos, where "moving fast" has become a mask
-for systemic laziness, where "succedding" means finding another sucker to fall
-for a predatory scam, the elevation of mediocre ideas into industry defaults.
+*Byzantine Systems* operates at the intersection of Logic, Mathematics, resilient
+operations and immutable infrastructure, engineering software that honors the
+most robust traditions of Computer Science. We are one amognst many initiatives
+that exist solely to push back against the modern Silicon Valley ethos, where
+"moving fast" has become a mask for systemic laziness, where "succedding" means
+finding another sucker to fall for a predatory scam. No wonder we've been
+elevating mediocre ideas into industry standards.
 
-We are here to converge academic rigor with uncompromising production standards,
-we'll replace "good enough" engineering with sound resilience, we are here to
-prove that the most enduring systems are built when integrity and logic are
-treated as non-negotiable requirements rather than afterthoughts.
+We are here to converge academic rigor with /téchne/, to bring back the old
+craftsmanship our field once fostered. We'll replace "good enough" engineering
+with sound resilience, we are here to prove that the most enduring systems are
+built when integrity and logic are treated as non-negotiable requirements rather
+than afterthoughts, the thankless toil of fostering /beauty/ and /meaning/ into
+computing.
+
+#+begin_verse
+O sages standing in God's holy fire
+As in the gold mosaic of a wall,
+Come from the holy fire, perne in a gyre,
+And be the singing masters of my soul.
+
+Consume my heart away; sick with desire
+And fastened to a dying animal
+It knows not what it is; and gather me
+Into the artifice of eternity
+
+[cite: @yeats2004tower p.2 part.3]
+#+end_verse

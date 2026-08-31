@@ -11,6 +11,67 @@ pub const site_url = "https://byzantine-systems.github.io"
 
 pub const site_description = "'There's no need to build a labyrinth when the entire universe is one.'"
 
+/// Runs in `<head>`, before the first paint, so a stored theme choice does not
+/// flash the system theme first. With no stored choice the attribute stays
+/// unset and the `prefers-color-scheme` media query decides.
+///
+/// It also marks the document as script-enabled: the theme switch is useless
+/// without JavaScript, so the stylesheet keeps it hidden until this runs.
+const theme_init_js = "(function () {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+  document.documentElement.classList.add('has-js');
+})();"
+
+/// Runs at the end of `<body>`, once the switch exists. Cycles the theme
+/// system → light → dark → system, persisting anything other than 'system'.
+///
+/// The switch is icon-only, so each glyph carries a name for the tooltip and
+/// the accessible label. The glyphs read as a fill level — empty circle for
+/// light, filled for dark, half-filled for whatever the system says — which
+/// keeps them in the same monochrome geometric family as the other nav items.
+const theme_switch_js = "(function () {
+  var order = ['system', 'light', 'dark'];
+  var glyphs = { system: '◐', light: '○', dark: '●' };
+  var names = { system: 'Auto', light: 'Light', dark: 'Dark' };
+  var button = document.getElementById('theme-switch');
+  if (!button) return;
+
+  function stored() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') return t;
+    } catch (e) {}
+    return 'system';
+  }
+
+  function apply(theme) {
+    if (theme === 'system') {
+      delete document.documentElement.dataset.theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
+    }
+    button.textContent = glyphs[theme];
+    button.setAttribute('title', 'Colour theme: ' + names[theme]);
+    button.setAttribute('aria-label', 'Colour theme: ' + names[theme] + '. Activate to change.');
+    try {
+      if (theme === 'system') {
+        localStorage.removeItem('theme');
+      } else {
+        localStorage.setItem('theme', theme);
+      }
+    } catch (e) {}
+  }
+
+  apply(stored());
+
+  button.addEventListener('click', function () {
+    apply(order[(order.indexOf(stored()) + 1) % order.length]);
+  });
+})();"
+
 fn to_link(text: String, link: String) {
   html.a(
     [
@@ -60,7 +121,24 @@ pub fn navbar() {
       html.li([], [to_link("□ Posts", "/posts/")]),
       html.li([], [to_link("◇ Projects", "/projects/")]),
       html.li([], [to_link("RSS", "/rss.xml")]),
+      theme_switch(),
     ]),
+  ])
+}
+
+/// The theme switch. Rendered with the 'system' label because that is the
+/// default; `theme_switch_js` relabels it from the stored choice on load.
+fn theme_switch() -> Element(msg) {
+  html.li([attribute.class("theme-switch")], [
+    html.button(
+      [
+        attribute.id("theme-switch"),
+        attribute.type_("button"),
+        attribute.title("Colour theme: Auto"),
+        attribute.aria_label("Colour theme: Auto. Activate to change."),
+      ],
+      [html.text("◐")],
+    ),
   ])
 }
 
@@ -115,6 +193,7 @@ fn layout(page_title: String, content: List(Element(msg))) -> Element(msg) {
       ]),
       // This links to the CSS file copied from your static folder
       html.link([attribute.rel("stylesheet"), attribute.href("/css/style.css")]),
+      html.script([], theme_init_js),
     ]),
     html.body([], [
       navbar(),
@@ -123,6 +202,7 @@ fn layout(page_title: String, content: List(Element(msg))) -> Element(msg) {
       ]),
       html.main([], content),
       footer(),
+      html.script([], theme_switch_js),
     ]),
   ])
 }

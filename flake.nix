@@ -88,17 +88,17 @@
               [
                 gnumake
                 pandoc
-                rebar3
               ]
               ++ lib.optionals stdenv.isLinux [ inotify-tools ]
               ++ [ config.packages.default ];
 
-            languages.erlang = {
+            languages.gleam = {
               enable = true;
             };
 
-            languages.gleam = {
+            languages.lua = {
               enable = true;
+              lsp.enable = true;
             };
 
             enterShell = ''

@@ -1,23 +1,140 @@
-#+TITLE: Hello, Byzantium
-#+DATE: 2026-05-07 12:00:00
-#+DESCRIPTION: First post on the new Blogatto-powered blog
+#+TITLE: Blogging with Gleam, Orgmode and Pandoc
+#+DATE: 2026-08-31 09:00:00
+#+DESCRIPTION: The first of many to come
 
-* Welcome
+#+begin_quote
+I’ve stumbled across a method of composing programs that excites me very
+much. In fact, my enthusiasm is so great that I must warn the reader to discount
+much of what I shall say as the ravings of a fanatic who thinks he has just seen
+a great light.
 
-Welcome to the *Byzantine Systems* blog.
+[cite:@knuth1984literate p.1]
+#+end_quote
 
-This post is authored in Emacs Org-mode [cite:@schulte2012multi], then converted
-to Markdown by Pandoc, and finally rendered to HTML by [[https://blogat.to][Blogatto]], a Gleam static
-site generator.
+Welcome to the first *Byzantine Systems* blog. Here I'll try explain why we've
+adopted the following tools to generate this blog:
 
-** Why this stack
++ [[https://orgmode.org/][Org-mode]] for writing comfort (and never leaving [[https://www.gnu.org/software/emacs/][Emacs]]).
++ [[https://pandoc.org/][Pandoc]] as a robust, mature converter.
++ [[https://nixos.org/][Nix]] with [[https://nix.dev/concepts/flakes.html][flakes]] and a [[https://devenv.sh/][devenv]].
++ [[https://gleam.run/][Gleam]] + [[https://github.com/veeso/blogatto][Blogatto]] for a typed, fast build pipeline. That can leverate [[https://github.com/lustre-labs/lustre][Lustre]]
+  for building our frontend.
 
-- Org-mode for writing comfort
-- Pandoc as a robust, mature converter
-- Gleam + Blogatto for a typed, fast build pipeline
 
-#+BEGIN_SRC gleam
-pub fn main() {
-  io.println("Hello, Byzantium!")
-}
+  #+CAPTION: An example on how we just have Lustre doing all our layouts.
+  #+BEGIN_SRC gleam
+    pub fn posts_page(posts: List(Post(msg))) -> Element(msg) {
+      let sorted = list.sort(posts, fn(a, b) { timestamp.compare(b.date, a.date) })
+
+      layout("Posts", [
+        html.h2([], [html.text("Posts")]),
+        case sorted {
+          [] -> html.p([], [html.text("No posts yet.")])
+          _ -> html.ul([], list.map(sorted, post_link))
+        },
+      ])
+    }
+  #+END_SRC
+
+The TL;DR version is basically this:
+
+#+NAME: emacs-to-blogatto-flow
+#+BEGIN_SRC dot :file ../../static/img/posts/00/emacs_to_blogatto_flow.png :cmdline -Kdot -Tpng :exports results
+  digraph PublishingPipeline {
+      // Layout and container styling
+      graph [
+          rankdir=LR,
+          bgcolor="#ffffff",
+          fontname="Segoe UI, Helvetica, Arial, sans-serif",
+          fontsize=12,
+          pad=0.5,
+          nodesep=0.5,
+          ranksep=0.75,
+          splines=polyline
+      ];
+
+      // Default node attributes
+      node [
+          shape=rect,
+          style="filled,rounded",
+          fontname="Segoe UI, Helvetica, Arial, sans-serif",
+          fontsize=10,
+          penwidth=1.5,
+          margin="0.3,0.18"
+      ];
+
+      // Default edge attributes
+      edge [
+          fontname="Segoe UI, Helvetica, Arial, sans-serif",
+          fontsize=9,
+          color="#64748b",
+          fontcolor="#475569",
+          penwidth=1.5,
+          arrowsize=0.8
+      ];
+
+      // Nodes
+      emacs [
+          label=<<font point-size="11"><b>1. Emacs + Orgmode</b></font><br/><font color="#64748b">Write raw content (.org)</font>>,
+          fillcolor="#f3e8ff",
+          color="#a855f7",
+          fontcolor="#581c87"
+      ];
+
+      pandoc [
+          label=<<font point-size="11"><b>2. Pandoc + plugins </b></font><br/><font color="#64748b">Convert Org to Markdown (.md)</font>>,
+          fillcolor="#e0f2fe",
+          color="#0284c7",
+          fontcolor="#075985"
+      ];
+
+      blogatto [
+          label=<<font point-size="11"><b>3. Blogatto</b></font><br/><font color="#64748b">Generate final HTML</font>>,
+          fillcolor="#dcfce7",
+          color="#16a34a",
+          fontcolor="#14532d"
+      ];
+
+      // Workflow connections
+      emacs -> pandoc [label=" Export "];
+      pandoc -> blogatto [label=" Build "];
+  }
 #+END_SRC
+
+#+CAPTION: Not a lot really going on here, I only interface with my ~*.org~ documents, is at the center of everything, Nix is the glue that makes everything seamless.
+#+RESULTS: emacs-to-blogatto-flow
+[[file:../../static/img/posts/00/emacs_to_blogatto_flow.png]]
+
+* Why Orgmode?
+
+#+begin_quote
+(...) trivial usage of Org-mode is nothing more than text editing, from which
+point the user can start to add special plain text Org-mode elements to the
+document. Org-mode is therefore easy to adopt and aims to be a general solution
+for authoring projects with mixed computational and natural languages. It
+supports multiple programming languages, export targets, and work flows.
+
+[cite:@schulte2012multi p.2]
+#+end_quote
+
+We already have markdown, right? Well, what if I told you 
+
+#+begin_quote
+Org-mode extends Emacs with a simple and powerful markup language that turns it
+into a language for creating, parsing, and interacting with
+hierarchically-organized text documents. Its rich feature set includes text
+structuring, project management, and a publishing system that can export to a
+variety of formats. Source code and data are located in active blocks, distinct
+from text sections, where "active" here means that code and data blocks can be
+evaluated to return their contents or their computational results. The results
+of code block evaluation can be written to a named data block in the document,
+where it can be referred to by other code blocks, any one of which can be
+written in a different computing language. In this way, an Org-mode buffer
+becomes a place where different computer languages communicate with one
+another. Like Emacs, Org-mode is extensible: support for new languages can be
+added by the user in a modular fashion through the definition of a small number
+of Emacs Lisp functions.
+
+[cite:@schulte2012multi p.7]
+#+end_quote
+
