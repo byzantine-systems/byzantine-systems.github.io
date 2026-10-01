@@ -1,5 +1,5 @@
 {
-  description = "Gleam + Nix build and development shell";
+  description = "Nix build and development shell";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
@@ -88,17 +88,17 @@
               [
                 gnumake
                 pandoc
-                rebar3
               ]
               ++ lib.optionals stdenv.isLinux [ inotify-tools ]
               ++ [ config.packages.default ];
 
-            languages.erlang = {
+            languages.gleam = {
               enable = true;
             };
 
-            languages.gleam = {
+            languages.lua = {
               enable = true;
+              lsp.enable = true;
             };
 
             enterShell = ''
