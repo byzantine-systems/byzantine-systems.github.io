@@ -13,7 +13,7 @@ a great light.
 
 Welcome to the first *Byzantine Systems* blog post. This is not my first attempt
 at building a website around Org-mode. I have already written about [[https://schonfinkel.github.io/blog/20241230-the_road_to_emacs_maximalism.html][the road to
-Emacs maximalism]] in my own personal blog, there Emacs, a few questionable
+Emacs maximalism]] in my own personal blog, where Emacs, a few questionable
 scripts and Nix held everything together. This time I wanted to keep the part
 that worked (writing everything in Emacs) while making the publishing side
 smaller, typed and easier to understand.
@@ -29,7 +29,9 @@ The end experiment uses the following tools:
 + [[https://github.com/lustre-labs/lustre][Lustre]] for defining the surrounding HTML without introducing a separate
   template language.
 
-That final point is more useful than it may initially sound. The page listing all posts, for example, is just a Gleam function returning a Lustre element:
+The last two points look too overkill for a simple static page, but I'll let you
+jugde by way we create the page that lists all posts. It's just a Gleam function
+returning a Lustre element:
 
 #+CAPTION: The post index is ordinary, type-checked Gleam code.
 #+BEGIN_SRC gleam
@@ -54,7 +56,7 @@ The tl;dr version of this blogpost looks like this:
 
   style.fill: "#ffffff"
 
-  # Default node styling (mirrors Graphviz `node [...]`)
+  # Default node styling
   ,*.shape: rectangle
   ,*.style: {
     border-radius: 8
@@ -62,7 +64,7 @@ The tl;dr version of this blogpost looks like this:
     font-size: 12
   }
 
-  # Default edge styling (mirrors Graphviz `edge [...]`)
+  # Default edge styling
   (* -> *)[*].style: {
     stroke: "#64748b"
     font-color: "#475569"
@@ -102,23 +104,74 @@ The tl;dr version of this blogpost looks like this:
 #+RESULTS: emacs-to-blogatto-flow
 [[file:../../static/img/posts/00/emacs_to_blogatto_flow.svg]]
 
-The important detail in that previous diagram was generated inside Emacs, want
-to keep the idea of "diagrams as code" alive, for now ~d2~ has been serving
-me well.
+One important detail, that previous diagram was generated inside Emacs, I want
+to keep the idea of "diagrams as code" alive, and for now ~d2~ has been serving
+me well. This is what the diagram code looks like without the Emacs magic to
+keep only the result (the image).
+
+#+BEGIN_SRC d2
+
+  direction: right
+
+  style.fill: "#ffffff"
+
+  # Default node styling
+  ,*.shape: rectangle
+  ,*.style: {
+    border-radius: 8
+    stroke-width: 2
+    font-size: 12
+  }
+
+  # Default edge styling
+  (* -> *)[*].style: {
+    stroke: "#64748b"
+    font-color: "#475569"
+    stroke-width: 2
+    font-size: 10
+  }
+
+  emacs: "1. Emacs + Orgmode\nWrite raw content (.org)" {
+    style: {
+      fill: "#f3e8ff"
+      stroke: "#a855f7"
+      font-color: "#581c87"
+    }
+  }
+
+  pandoc: "2. Pandoc + plugins\nConvert Org to Markdown (.md)" {
+    style: {
+      fill: "#e0f2fe"
+      stroke: "#0284c7"
+      font-color: "#075985"
+    }
+  }
+
+  blogatto: "3. Blogatto\nGenerate final HTML" {
+    style: {
+      fill: "#dcfce7"
+      stroke: "#16a34a"
+      font-color: "#14532d"
+    }
+  }
+
+  emacs -> pandoc: Export
+  pandoc -> blogatto: Build
+#+END_SRC
 
 * Why keep everything inside Emacs?
 
-Moderately related, but my close friend Marcos Magueta made an interesting video
+Moderately related, but my close friend [[https://marcosmagueta.com/][Marcos Magueta]] made an interesting video
 called [[https://www.youtube.com/watch?v=HgqEy8IjfLU][GNU Shepherd is the abstraction for a better computing age]], there he
-argues about BLOAT, a word so despised in the UNIX world, but most people do so
+argues about *BLOAT*, a word so despised in the UNIX world, but most people do so
 without:
 
-+ Properly defining what BLOAT really is.
-+ Without knowing waht GOOD BLOAT can give you.
++ Properly defining what *BLOAT* really is.
++ Without knowing waht *GOOD BLOAT* can give you.
 
 Emacs, when taken from a UNIX philosophy perspective, is pure bloat. Indeed,
-Emacs does not follow UNIX's "do one thing well". One can actually argue that is
-is actually good, the lack of unified environment end up causing userland BLOAT
+Emacs does not follow UNIX's "do one thing well". One can even argue that is
+is actually good, the lack of unified environment ends up causing userland *BLOAT*
 anyway. By this very definition, Emacs would be /good bloat/.
 
 #+begin_quote
@@ -244,6 +297,7 @@ same flake reproduces the build environment without relying on whatever happens
 to be installed globally.
 
 #+begin_src nix
+
   # ...
   packages = {
     default = inputs'.nix-gleam.packages.buildGleamApplication {
@@ -296,6 +350,7 @@ From inside the development environment the complete build is intentionally
 mundane:
 
 #+BEGIN_SRC sh
+
   make run
   # or
   make dev
