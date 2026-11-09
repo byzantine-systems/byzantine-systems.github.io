@@ -9,7 +9,8 @@ import lustre/element/html
 
 pub const site_url = "https://byzantine-systems.github.io"
 
-pub const site_description = "'There's no need to build a labyrinth when the entire universe is one.'"
+pub const site_description =
+  "'There's no need to build a labyrinth when the entire universe is one.'"
 
 /// Runs in `<head>`, before the first paint, so a stored theme choice does not
 /// flash the system theme first. With no stored choice the attribute stays
@@ -17,7 +18,8 @@ pub const site_description = "'There's no need to build a labyrinth when the ent
 ///
 /// It also marks the document as script-enabled: the theme switch is useless
 /// without JavaScript, so the stylesheet keeps it hidden until this runs.
-const theme_init_js = "(function () {
+const theme_init_js =
+  "(function () {
   try {
     var t = localStorage.getItem('theme');
     if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
@@ -32,7 +34,8 @@ const theme_init_js = "(function () {
 /// the accessible label. The glyphs read as a fill level — empty circle for
 /// light, filled for dark, half-filled for whatever the system says — which
 /// keeps them in the same monochrome geometric family as the other nav items.
-const theme_switch_js = "(function () {
+const theme_switch_js =
+  "(function () {
   var order = ['system', 'light', 'dark'];
   var glyphs = { system: '◐', light: '○', dark: '●' };
   var names = { system: 'Auto', light: 'Light', dark: 'Dark' };
